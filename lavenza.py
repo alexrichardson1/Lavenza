@@ -88,10 +88,7 @@ def print_table(data, headers):
     print(tabulate(data, headers=headers, tablefmt="fancy_grid"))
 
 
-def main():
-    soup = BeautifulSoup(get_persona_page(), "html.parser")
-    name, elementals_table, skills, ingredients_table = scrape_persona_info(
-        soup)
+def print_data(name, elementals_table, skills, ingredients_table):
     print("Persona name:", " ".join(name.split()[:-3]))
     print_table(elementals_table, "firstrow")
     print_table(skills, ["Skills"])
@@ -102,6 +99,13 @@ def main():
     for i in range(1, len(ingredients_table)):
         headers.append("Persona #" + str(i))
     print_table(ingredients_table, headers)
+
+
+def main():
+    soup = BeautifulSoup(get_persona_page(), "html.parser")
+    name, elementals_table, skills, ingredients_table = scrape_persona_info(
+        soup)
+    print_data(name, elementals_table, skills, ingredients_table)
 
 
 if __name__ == '__main__':
