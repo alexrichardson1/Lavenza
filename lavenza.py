@@ -5,8 +5,16 @@ from time import sleep
 from tabulate import tabulate
 
 
+def get_table_header_data(soup, tag, key):
+    table = soup.find(tag, key)
+    table_header = table.find("thead")
+    row = table_header.find_all("th")
+    return [x.text for x in row]
+
+
 def get_table_data(soup, tag, key):
     data = []
+    data.append(get_table_header_data(soup, tag, key))
     table = soup.find(tag, key)
     table_body = table.find("tbody")
     rows = table_body.find_all("tr")
@@ -24,7 +32,7 @@ def clean_row(row):
     personas = row[1:]
     for i, persona in enumerate(personas, 1):
         persona_info = persona.split()
-        # remove all other info than the name
+        # keep only the name
         if persona_info[-1] == '⚠':
             row[i] = " ".join(persona_info[:-4])
         else:
@@ -56,6 +64,10 @@ def main():
     soup = BeautifulSoup(html, "html.parser")
     # persona name
     name = soup.find("h2", {"class": "ng-binding"}).text
+    # elemental attributes
+    elementals_table = get_table_data(
+        soup, "table", {
+            "class": "ui table unstackable striped mobile-hidden"})
     # persona skills
     skill_table = soup.find("table", {"id": "skillTable"})
     skills = skill_table.find_all("a")
@@ -67,6 +79,11 @@ def main():
     driver.quit()
 
     print("Persona name:", " ".join(name.split()[:-3]))
+    print(
+        tabulate(
+            elementals_table,
+            headers="firstrow",
+            tablefmt="fancy_grid"))
     print(tabulate(skills, headers=["Skills"], tablefmt="fancy_grid"))
     for i in range(len(table)):
         table[i] = clean_row(table[i])
