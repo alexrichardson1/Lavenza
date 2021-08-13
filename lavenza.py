@@ -18,9 +18,17 @@ def get_table_data(soup, tag, key):
 
 
 def clean_row(row):
+    # remove number
     row = row[1:]
-    for i, persona in enumerate(row[1:], 1):
-        row[i] = persona.split()[0]
+    # persona ingredients
+    personas = row[1:]
+    for i, persona in enumerate(personas, 1):
+        persona_info = persona.split()
+        # remove all other info than the name
+        if persona_info[-1] == '⚠':
+            row[i] = " ".join(persona_info[:-4])
+        else:
+            row[i] = " ".join(persona_info[:-3])
     return row
 
 
