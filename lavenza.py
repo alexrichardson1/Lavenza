@@ -30,6 +30,24 @@ def get_persona_page():
     return html
 
 
+def scrape_persona_info(soup):
+    # persona name
+    name = soup.find("h2", {"class": "ng-binding"}).text
+    # elemental attributes
+    elementals_table = get_table_data(
+        soup, "table", {
+            "class": "ui table unstackable striped mobile-hidden"}, True)
+    # persona skills
+    skill_table = soup.find("table", {"id": "skillTable"})
+    skills = skill_table.find_all("a")
+    skills = [[x.text] for x in skills]
+    # persona fusion ingredients
+    ingredients_table = get_table_data(
+        soup, "table", {
+            "class": "ui table unstackable striped recipesTable"}, False)
+    return name, elementals_table, skills, ingredients_table
+
+
 def get_table_header_data(soup, tag, key):
     table = soup.find(tag, key)
     table_header = table.find("thead")
@@ -68,21 +86,8 @@ def clean_row(row):
 
 def main():
     soup = BeautifulSoup(get_persona_page(), "html.parser")
-    # persona name
-    name = soup.find("h2", {"class": "ng-binding"}).text
-    # elemental attributes
-    elementals_table = get_table_data(
-        soup, "table", {
-            "class": "ui table unstackable striped mobile-hidden"}, True)
-    # persona skills
-    skill_table = soup.find("table", {"id": "skillTable"})
-    skills = skill_table.find_all("a")
-    skills = [[x.text] for x in skills]
-    # persona fusion ingredients
-    table = get_table_data(
-        soup, "table", {
-            "class": "ui table unstackable striped recipesTable"}, False)
-
+    name, elementals_table, skills, ingredients_table = scrape_persona_info(
+        soup)
     print("Persona name:", " ".join(name.split()[:-3]))
     print(
         tabulate(
@@ -90,12 +95,12 @@ def main():
             headers="firstrow",
             tablefmt="fancy_grid"))
     print(tabulate(skills, headers=["Skills"], tablefmt="fancy_grid"))
-    for i in range(len(table)):
-        table[i] = clean_row(table[i])
+    for i in range(len(ingredients_table)):
+        ingredients_table[i] = clean_row(ingredients_table[i])
     headers = ["Cost"]
-    for i in range(1, len(table)):
+    for i in range(1, len(ingredients_table)):
         headers.append("Persona #" + str(i))
-    print(tabulate(table, headers=headers, tablefmt="fancy_grid"))
+    print(tabulate(ingredients_table, headers=headers, tablefmt="fancy_grid"))
 
 
 if __name__ == '__main__':
