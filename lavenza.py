@@ -66,11 +66,14 @@ def main():
             "class": "ui table unstackable striped recipesTable"})
     driver.quit()
 
-    print("Persona name:", name)
+    print("Persona name:", " ".join(name.split()[:-3]))
     print(tabulate(skills, headers=["Skills"], tablefmt="fancy_grid"))
     for i in range(len(table)):
         table[i] = clean_row(table[i])
-    print(tabulate(table, headers=["Cost"], tablefmt="fancy_grid"))
+    headers = ["Cost"]
+    for i in range(1, len(table)):
+        headers.append("Persona #" + str(i))
+    print(tabulate(table, headers=headers, tablefmt="fancy_grid"))
 
 
 if __name__ == '__main__':
