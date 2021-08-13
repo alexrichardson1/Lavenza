@@ -84,23 +84,24 @@ def clean_row(row):
     return row
 
 
+def print_table(data, headers):
+    print(tabulate(data, headers=headers, tablefmt="fancy_grid"))
+
+
 def main():
     soup = BeautifulSoup(get_persona_page(), "html.parser")
     name, elementals_table, skills, ingredients_table = scrape_persona_info(
         soup)
     print("Persona name:", " ".join(name.split()[:-3]))
-    print(
-        tabulate(
-            elementals_table,
-            headers="firstrow",
-            tablefmt="fancy_grid"))
-    print(tabulate(skills, headers=["Skills"], tablefmt="fancy_grid"))
+    print_table(elementals_table, "firstrow")
+    print_table(skills, ["Skills"])
+    # clean the data for each ingredient persona
     for i in range(len(ingredients_table)):
         ingredients_table[i] = clean_row(ingredients_table[i])
     headers = ["Cost"]
     for i in range(1, len(ingredients_table)):
         headers.append("Persona #" + str(i))
-    print(tabulate(ingredients_table, headers=headers, tablefmt="fancy_grid"))
+    print_table(ingredients_table, headers)
 
 
 if __name__ == '__main__':
