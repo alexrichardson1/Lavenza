@@ -4,6 +4,18 @@ from bs4 import BeautifulSoup
 from time import sleep
 
 
+def get_table_data(soup, tag, key):
+    data = []
+    table = soup.find(tag, key)
+    table_body = table.find("tbody")
+    rows = table_body.find_all("tr")
+    for row in rows:
+        cols = row.find_all("td")
+        cols = [e.text.strip() for e in cols]
+        data.append(cols)
+    return data
+
+
 def main():
     persona = "Arsene"
     # using firefox-geckodriver
@@ -26,10 +38,15 @@ def main():
     sleep(3)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+    name = soup.find("h2", {"class": "ng-binding"})
     skill_table = soup.find("table", {"id": "skillTable"})
     skills = skill_table.find_all("a")
     for skill in skills:
         print(skill.text)
+
+    table = get_table_data(
+        soup, "table", {
+            "class": "ui table unstackable striped recipesTable"})
     driver.quit()
 
 
