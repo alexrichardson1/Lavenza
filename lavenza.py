@@ -6,7 +6,7 @@ from tabulate import tabulate
 
 
 def get_persona_page():
-    persona = "Arsene"
+    persona = input("Enter name of persona: ")
     # using firefox-geckodriver
     driver = webdriver.Firefox()
     # Persona 5 Royal Fusion Calculator website
