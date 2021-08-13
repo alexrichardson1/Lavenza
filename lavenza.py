@@ -12,9 +12,10 @@ def get_table_header_data(soup, tag, key):
     return [x.text for x in row]
 
 
-def get_table_data(soup, tag, key):
+def get_table_data(soup, tag, key, want_header):
     data = []
-    data.append(get_table_header_data(soup, tag, key))
+    if want_header:
+        data.append(get_table_header_data(soup, tag, key))
     table = soup.find(tag, key)
     table_body = table.find("tbody")
     rows = table_body.find_all("tr")
@@ -67,7 +68,7 @@ def main():
     # elemental attributes
     elementals_table = get_table_data(
         soup, "table", {
-            "class": "ui table unstackable striped mobile-hidden"})
+            "class": "ui table unstackable striped mobile-hidden"}, True)
     # persona skills
     skill_table = soup.find("table", {"id": "skillTable"})
     skills = skill_table.find_all("a")
@@ -75,7 +76,7 @@ def main():
     # persona fusion ingredients
     table = get_table_data(
         soup, "table", {
-            "class": "ui table unstackable striped recipesTable"})
+            "class": "ui table unstackable striped recipesTable"}, False)
     driver.quit()
 
     print("Persona name:", " ".join(name.split()[:-3]))
