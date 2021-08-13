@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from bs4 import BeautifulSoup
 from time import sleep
+from tabulate import tabulate
 
 
 def get_table_data(soup, tag, key):
@@ -14,6 +15,13 @@ def get_table_data(soup, tag, key):
         cols = [e.text.strip() for e in cols]
         data.append(cols)
     return data
+
+
+def clean_row(row):
+    row = row[1:]
+    for i, persona in enumerate(row[1:], 1):
+        row[i] = persona.split()[0]
+    return row
 
 
 def main():
@@ -38,16 +46,23 @@ def main():
     sleep(3)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
-    name = soup.find("h2", {"class": "ng-binding"})
+    # persona name
+    name = soup.find("h2", {"class": "ng-binding"}).text
+    # persona skills
     skill_table = soup.find("table", {"id": "skillTable"})
     skills = skill_table.find_all("a")
-    for skill in skills:
-        print(skill.text)
-
+    skills = [[x.text] for x in skills]
+    # persona fusion ingredients
     table = get_table_data(
         soup, "table", {
             "class": "ui table unstackable striped recipesTable"})
     driver.quit()
+
+    print("Persona name:", name)
+    print(tabulate(skills, headers=["Skills"], tablefmt="fancy_grid"))
+    for i in range(len(table)):
+        table[i] = clean_row(table[i])
+    print(tabulate(table, headers=["Cost"], tablefmt="fancy_grid"))
 
 
 if __name__ == '__main__':
