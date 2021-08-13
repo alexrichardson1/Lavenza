@@ -62,6 +62,7 @@ def main():
     # ensure the page is loaded
     sleep(3)
     html = driver.page_source
+    driver.quit()
     soup = BeautifulSoup(html, "html.parser")
     # persona name
     name = soup.find("h2", {"class": "ng-binding"}).text
@@ -77,7 +78,6 @@ def main():
     table = get_table_data(
         soup, "table", {
             "class": "ui table unstackable striped recipesTable"}, False)
-    driver.quit()
 
     print("Persona name:", " ".join(name.split()[:-3]))
     print(
