@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from bs4 import BeautifulSoup
 from time import sleep
 
@@ -14,8 +15,12 @@ def main():
         "/html/body/div/ng-view/div/input")
     # search for persona
     searchbox.send_keys(persona)
-    persona_link = driver.find_element_by_xpath(
-        "/html/body/div/ng-view/table/tbody/tr/td[2]/a")
+    try:
+        persona_link = driver.find_element_by_xpath(
+            "/html/body/div/ng-view/table/tbody/tr/td[2]/a")
+    except NoSuchElementException:
+        driver.quit()
+        exit("Persona " + persona + " not found.")
     persona_link.click()
     # ensure the page is loaded
     sleep(3)
