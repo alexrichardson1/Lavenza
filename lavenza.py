@@ -89,14 +89,19 @@ def print_table(data, headers):
 
 
 def print_data(name, elementals_table, skills, ingredients_table):
-    print("Persona name:", " ".join(name.split()[:-3]))
+    print(
+        "================================================ " +
+        " ".join(
+            name.split()[
+                :-3]) +
+        " ================================================")
     print_table(elementals_table, "firstrow")
     print_table(skills, ["Skills"])
     # clean the data for each ingredient persona
     for i in range(len(ingredients_table)):
         ingredients_table[i] = clean_row(ingredients_table[i])
     headers = ["Cost"]
-    for i in range(1, len(ingredients_table)):
+    for i in range(1, len(ingredients_table[0])):
         headers.append("Persona #" + str(i))
     print_table(ingredients_table, headers)
 
