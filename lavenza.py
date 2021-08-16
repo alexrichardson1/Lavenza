@@ -1,3 +1,5 @@
+from tkinter import *
+from tkinter.ttk import *
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from bs4 import BeautifulSoup
@@ -5,8 +7,7 @@ from time import sleep
 from tabulate import tabulate
 
 
-def get_persona_page():
-    persona = input("Enter name of persona: ")
+def get_persona_page(persona):
     # using firefox-geckodriver
     driver = webdriver.Firefox()
     # Persona 5 Royal Fusion Calculator website
@@ -24,7 +25,7 @@ def get_persona_page():
         exit("Persona " + persona + " not found.")
     persona_link.click()
     # ensure the page is loaded
-    sleep(3)
+    sleep(2)
     html = driver.page_source
     driver.quit()
     return html
@@ -106,11 +107,31 @@ def print_data(name, elementals_table, skills, ingredients_table):
     print_table(ingredients_table, headers)
 
 
-def main():
-    soup = BeautifulSoup(get_persona_page(), "html.parser")
+def scrape_persona(persona):
+    soup = BeautifulSoup(get_persona_page(persona), "html.parser")
     name, elementals_table, skills, ingredients_table = scrape_persona_info(
         soup)
     print_data(name, elementals_table, skills, ingredients_table)
+
+
+def main():
+    root = Tk()
+    root.minsize(300, 200)
+    root.title("Lavenza")
+    label = Label(root, text="Persona Name")
+    label.pack()
+    entry = Entry(root,
+                  width=30)
+    entry.pack()
+    button = Button(
+        root,
+        text="Search",
+        command=lambda: scrape_persona(
+            entry.get()))
+    button.pack()
+
+    # tkinter event loop
+    root.mainloop()
 
 
 if __name__ == '__main__':
