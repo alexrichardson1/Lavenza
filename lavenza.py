@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from tkinter.ttk import *
 from time import sleep
 from selenium import webdriver
@@ -23,7 +24,9 @@ def get_persona_page(persona):
             "/html/body/div/ng-view/table/tbody/tr/td[2]/a")
     except NoSuchElementException:
         driver.quit()
-        exit("Persona " + persona + " not found.")
+        messagebox.showerror("Search Error", "Perona not found.")
+        return None
+        # exit("Persona " + persona + " not found.")
     persona_link.click()
     # ensure the page is loaded
     sleep(2)
@@ -125,7 +128,10 @@ def save_data(persona_title, elementals_table, skills, ingredients_table):
 
 def scrape_persona(persona):
     """Scrape persona fusion information."""
-    soup = BeautifulSoup(get_persona_page(persona), "html.parser")
+    html = get_persona_page(persona)
+    if html is None:
+        return
+    soup = BeautifulSoup(html, "html.parser")
     persona_title, elementals_table, skills, ingredients_table = scrape_persona_info(
         soup)
     save_data(persona_title, elementals_table, skills, ingredients_table)
