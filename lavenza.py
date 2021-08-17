@@ -115,14 +115,14 @@ def save_data(persona_title, elementals_table, skills, ingredients_table):
         headers.append("Persona #" + str(i))
     ingredients_table = format_table(ingredients_table, headers)
 
-    file = open(f"{name}.txt", "w")
-    file.write(name_display)
-    file.write("\n\n")
-    file.write(elementals_table)
-    file.write("\n\n")
-    file.write(skills)
-    file.write("\n\n")
-    file.write(ingredients_table)
+    with open(f"{name}.txt", "w") as file:
+        file.write(name_display)
+        file.write("\n\n")
+        file.write(elementals_table)
+        file.write("\n\n")
+        file.write(skills)
+        file.write("\n\n")
+        file.write(ingredients_table)
     file.close()
 
 
@@ -138,6 +138,7 @@ def scrape_persona(persona):
 
 
 def main():
+    """GUI for Lavenza."""
     root = Tk()
     root.minsize(300, 200)
     root.title("Lavenza")
