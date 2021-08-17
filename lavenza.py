@@ -1,13 +1,14 @@
 from tkinter import *
 from tkinter.ttk import *
+from time import sleep
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from bs4 import BeautifulSoup
-from time import sleep
 from tabulate import tabulate
 
 
 def get_persona_page(persona):
+    """Obtains the html of the page for `peronsa`."""
     # using firefox-geckodriver
     driver = webdriver.Firefox()
     # Persona 5 Royal Fusion Calculator website
@@ -32,6 +33,7 @@ def get_persona_page(persona):
 
 
 def scrape_persona_info(soup):
+    """Scrapes the pesona information using `soup`."""
     # persona name
     persona_title = soup.find("h2", {"class": "ng-binding"}).text
     # elemental attributes
@@ -50,6 +52,7 @@ def scrape_persona_info(soup):
 
 
 def get_table_header_data(soup, tag, key):
+    """Scrapes data from a table header."""
     table = soup.find(tag, key)
     table_header = table.find("thead")
     row = table_header.find_all("th")
@@ -57,6 +60,8 @@ def get_table_header_data(soup, tag, key):
 
 
 def get_table_data(soup, tag, key, want_header):
+    """Scrapes data from a table. If `want_header` is true, it will return data
+     from the header as well."""
     data = []
     if want_header:
         data.append(get_table_header_data(soup, tag, key))
@@ -71,6 +76,7 @@ def get_table_data(soup, tag, key, want_header):
 
 
 def clean_row(row):
+    """Clean the data regarding a perona in `row`."""
     # remove number
     row = row[1:]
     # persona ingredients
@@ -86,10 +92,12 @@ def clean_row(row):
 
 
 def format_table(data, headers):
+    """Formats a table for pretty printing."""
     return tabulate(data, headers=headers, tablefmt="fancy_grid")
 
 
 def save_data(persona_title, elementals_table, skills, ingredients_table):
+    """Write persona information to a `persona_name`.txt file"""
     name = " ".join(persona_title.split()[:-3])
     name_display = "================================================ " + \
         name + \
@@ -116,6 +124,7 @@ def save_data(persona_title, elementals_table, skills, ingredients_table):
 
 
 def scrape_persona(persona):
+    """Scrape persona fusion information."""
     soup = BeautifulSoup(get_persona_page(persona), "html.parser")
     persona_title, elementals_table, skills, ingredients_table = scrape_persona_info(
         soup)
