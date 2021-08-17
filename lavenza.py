@@ -1,6 +1,5 @@
-from tkinter import *
-from tkinter import messagebox
-from tkinter.ttk import *
+from tkinter import Tk, messagebox
+from tkinter.ttk import Label, Entry, Button
 from time import sleep
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
