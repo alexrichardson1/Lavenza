@@ -33,7 +33,7 @@ def get_persona_page(persona):
 
 def scrape_persona_info(soup):
     # persona name
-    name = soup.find("h2", {"class": "ng-binding"}).text
+    persona_title = soup.find("h2", {"class": "ng-binding"}).text
     # elemental attributes
     elementals_table = get_table_data(
         soup, "table", {
@@ -46,7 +46,7 @@ def scrape_persona_info(soup):
     ingredients_table = get_table_data(
         soup, "table", {
             "class": "ui table unstackable striped recipesTable"}, False)
-    return name, elementals_table, skills, ingredients_table
+    return persona_title, elementals_table, skills, ingredients_table
 
 
 def get_table_header_data(soup, tag, key):
@@ -89,9 +89,10 @@ def format_table(data, headers):
     return tabulate(data, headers=headers, tablefmt="fancy_grid")
 
 
-def save_data(name, elementals_table, skills, ingredients_table):
-    name = "================================================ " + \
-        " ".join(name.split()[:-3]) + \
+def save_data(persona_title, elementals_table, skills, ingredients_table):
+    name = " ".join(persona_title.split()[:-3])
+    name_display = "================================================ " + \
+        name + \
         " ================================================"
     elementals_table = format_table(elementals_table, "firstrow")
     skills = format_table(skills, ["Skills"])
@@ -104,7 +105,7 @@ def save_data(name, elementals_table, skills, ingredients_table):
     ingredients_table = format_table(ingredients_table, headers)
 
     file = open("fusion.txt", "w")
-    file.write(name)
+    file.write(name_display)
     file.write("\n\n")
     file.write(elementals_table)
     file.write("\n\n")
@@ -116,9 +117,9 @@ def save_data(name, elementals_table, skills, ingredients_table):
 
 def scrape_persona(persona):
     soup = BeautifulSoup(get_persona_page(persona), "html.parser")
-    name, elementals_table, skills, ingredients_table = scrape_persona_info(
+    persona_title, elementals_table, skills, ingredients_table = scrape_persona_info(
         soup)
-    save_data(name, elementals_table, skills, ingredients_table)
+    save_data(persona_title, elementals_table, skills, ingredients_table)
 
 
 def main():
