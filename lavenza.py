@@ -115,7 +115,7 @@ def save_data(persona_title, elementals_table, skills, ingredients_table):
         headers.append("Persona #" + str(i))
     ingredients_table = format_table(ingredients_table, headers)
 
-    file = open("fusion.txt", "w")
+    file = open(f"{name}.txt", "w")
     file.write(name_display)
     file.write("\n\n")
     file.write(elementals_table)
