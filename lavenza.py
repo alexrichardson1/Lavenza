@@ -1,3 +1,7 @@
+"""
+Lavenza provides information for fusion in the Velvet room.
+"""
+
 from tkinter import Tk, messagebox
 from tkinter.ttk import Label, Entry, Button
 from time import sleep
@@ -107,8 +111,8 @@ def save_data(persona_title, elementals_table, skills, ingredients_table):
     elementals_table = format_table(elementals_table, "firstrow")
     skills = format_table(skills, ["Skills"])
     # clean the data for each persona ingredient
-    for i in range(len(ingredients_table)):
-        ingredients_table[i] = clean_row(ingredients_table[i])
+    for i, ingredient in enumerate(ingredients_table):
+        ingredients_table[i] = clean_row(ingredient)
     headers = ["Cost"]
     for i in range(1, len(ingredients_table[0])):
         headers.append("Persona #" + str(i))
